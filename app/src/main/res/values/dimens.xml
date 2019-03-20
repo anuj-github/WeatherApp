@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size">54sp</dimen>
+    <dimen name="view_margin_medium">8dp</dimen>
+    <dimen name="margin_retry">44dp</dimen>
+    <dimen name="text_temp_size">96sp</dimen>
+    <dimen name="text_city_size">36sp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="card_height">96dp</dimen>
+</resources>
