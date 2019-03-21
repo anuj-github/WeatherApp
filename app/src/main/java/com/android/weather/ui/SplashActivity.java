@@ -33,14 +33,15 @@ public class SplashActivity extends AppCompatActivity
         if (!checkPermission()) {
             requestPermission();
         }
-        else{
-            isLocationEnabled();
+        else {
+            startWeatherActivity();
         }
 
     }
 
     /**
      * check location permission
+     *
      * @return
      */
     private boolean checkPermission()
@@ -69,7 +70,7 @@ public class SplashActivity extends AppCompatActivity
                 boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 Log.i(TAG, "Location Accepted? " + locationAccepted);
                 if (locationAccepted) {
-                    isLocationEnabled();
+                    startWeatherActivity();
                 }
                 else {
                     checkPermissionStatus();
@@ -78,6 +79,9 @@ public class SplashActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * start weather activity
+     */
     private void startWeatherActivity()
     {
         Intent intent = new Intent(this, WeatherActivity.class);
@@ -85,6 +89,9 @@ public class SplashActivity extends AppCompatActivity
         finish();
     }
 
+    /**
+     * check/request permission if device is above M
+     */
     private void checkPermissionStatus()
     {
         Toast.makeText(this, R.string.permission_error,
@@ -92,22 +99,33 @@ public class SplashActivity extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showMessageOKCancel(R.string.permision_reason,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(
-                                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                    PERMISSION_REQUEST_CODE);
-                            }
-                        }
-                    });
-                return;
+                showMessageOKCancel(R.string.permision_reason, getPermissionDialog());
+            }
+            else {
+                finish();
             }
         }
+    }
+
+    /**
+     * permission request dialog
+     *
+     * @return
+     */
+    private DialogInterface.OnClickListener getPermissionDialog()
+    {
+        return new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST_CODE);
+                }
+            }
+        };
     }
 
     private void showMessageOKCancel(int message, DialogInterface.OnClickListener okListener)
@@ -120,46 +138,4 @@ public class SplashActivity extends AppCompatActivity
             .show();
     }
 
-    private void isLocationEnabled()
-    {
-        final Context context = this;
-        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (!gps_enabled && !network_enabled) {
-            // notify user
-            new AlertDialog.Builder(this)
-                .setMessage(R.string.gps_network_not_enabled)
-                .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt)
-                    {
-                        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-        }
-        else{
-            Log.i(TAG, "Location is enabled");
-            startWeatherActivity();
-        }
-    }
 }

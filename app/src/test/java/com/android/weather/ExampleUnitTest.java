@@ -38,11 +38,11 @@ public class ExampleUnitTest
         double temp = 29.4;
         String res = Utils.getTemp(temp);
         assertNotNull(res);
-        assertEquals("29 C", res);
+        assertEquals("29"+(char)0x00B0 +"C", res);
         //test without decimal
         double d = 28;
         res = Utils.getTemp(d);
         assertNotNull(res);
-        assertEquals("28 C", res);
+        assertEquals("28"+(char)0x00B0 +"C", res);
     }
 }
