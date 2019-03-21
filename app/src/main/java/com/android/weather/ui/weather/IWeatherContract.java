@@ -12,7 +12,7 @@ public interface IWeatherContract
         void showError();
     }
     interface IWeatherPresenter{
-        void loadWeatherData();
+        void loadWeatherData(String address);
         void onDestroy();
     }
 

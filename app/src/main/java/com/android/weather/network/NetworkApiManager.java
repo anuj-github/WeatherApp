@@ -55,10 +55,12 @@ public class NetworkApiManager
      *
      * @param listener
      */
-    public void loadFromApi(IWeatherContract.onFinishedListener listener)
+    public void loadFromApi(String address, IWeatherContract.onFinishedListener listener)
     {
         ApiInterface showApi = retrofit.create(ApiInterface.class);
-        Call<ApiResponse> call = showApi.getWeather(Constant.FORECAST_URI);
+        String url = Constant.FORECAST_URI+address+Constant.day;
+        Log.i(TAG, "Url is " + url);
+        Call<ApiResponse> call = showApi.getWeather(url);
         call.enqueue(new Callback<ApiResponse>()
         {
             @Override

@@ -10,14 +10,13 @@ public class WeatherPresenter implements IWeatherContract.IWeatherPresenter, IWe
     public WeatherPresenter(IWeatherContract.IWeatherView view)
     {
         this.view = view;
-        loadWeatherData();
     }
 
     @Override
-    public void loadWeatherData()
+    public void loadWeatherData(String address)
     {
         view.showProgress();
-        NetworkApiManager.getInstance().loadFromApi(this);
+        NetworkApiManager.getInstance().loadFromApi(address, this);
     }
 
     @Override

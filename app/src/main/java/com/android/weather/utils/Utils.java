@@ -37,7 +37,17 @@ public class Utils
     {
         String res = String.valueOf(temp);
         String str[] = res.split("\\.");
-        return str[0] + " C";
+        return str[0]+(char)0x00B0+"C" ;
     }
 
+    /**
+     * get lat long
+     * @param latitude
+     * @param longitude
+     * @return
+     */
+    public static String getLatLong(double latitude, double longitude)
+    {
+        return  latitude+","+longitude;
+    }
 }
