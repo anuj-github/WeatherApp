@@ -17,8 +17,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="56dp"
-            android:layout_margin="62dp"
+            android:layout_marginTop="@dimen/linlayoutWeatherTop"
+            android:layout_marginBottom="@dimen/linlayoutweatherBottom"
             android:layout_gravity="center">
         <TextView
             android:id="@+id/temp_text"
@@ -35,7 +35,6 @@
             android:id="@+id/temp_city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:textColor="@color/city_color"
             android:textSize="@dimen/text_city_size"
             android:fontFamily="sans-serif-thin"
@@ -53,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layoutAnimation="@anim/layout_animation_fall_down"
             android:orientation="vertical">
+            <!--first day-->
         <androidx.cardview.widget.CardView
             style="@style/card_style"
             >
@@ -71,7 +71,7 @@
                      />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
-            <!--two day-->
+            <!--second day-->
             <View
                 style="@style/divider"
                 />

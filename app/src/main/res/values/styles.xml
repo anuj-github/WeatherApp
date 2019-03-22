@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="day_style">
+    <style name="day_style" parent="textStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:paddingLeft">@dimen/margin_medium</item>
@@ -21,7 +21,7 @@
 
     </style>
 
-    <style name="temp_style">
+    <style name="temp_style" parent="textStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:paddingEnd">@dimen/margin_medium</item>
@@ -29,11 +29,14 @@
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
 
+
+    </style>
+
+    <style name="textStyle" >
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textColor">@color/temp_color</item>
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:fontFamily">sans-serif-regular</item>
-
     </style>
 
     <style name="card_style">

@@ -8,4 +8,6 @@
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="text_size_16">16sp</dimen>
     <dimen name="card_height">96dp</dimen>
+    <dimen name="linlayoutWeatherTop">56dp</dimen>
+    <dimen name="linlayoutweatherBottom">62dp</dimen>
 </resources>
