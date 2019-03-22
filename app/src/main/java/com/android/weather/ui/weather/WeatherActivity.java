@@ -82,6 +82,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         presenter = new WeatherPresenter(this);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getLocation();
     }
 
@@ -99,6 +100,10 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         progressBar.setVisibility(View.GONE);
     }
 
+    /**
+     * update ui with received response
+     * @param response
+     */
     @Override
     public void refreshWeather(ApiResponse response)
     {
@@ -176,6 +181,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     @OnClick(R.id.retryButton)
     public void onRetry()
     {
+        Log.i(TAG, "on Retry");
         showProgress();
         if (address != null) {
             presenter.loadWeatherData(address);
@@ -190,13 +196,24 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
      */
     void getLocation()
     {
+        Log.i(TAG, "check location");
+
         try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            //if last known location is already available use this to fetch location
+            if (location != null) {
+                Log.i(TAG, "Location available");
+                onLocationReceived(location);
+                return;
+            }
             boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            Log.i(TAG, "is gps enabled? " + networkEnabled + " Requesting location now");
             if (gpsEnabled && networkEnabled) {
                 showProgress();
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 500, this);
+                showToast(getString(R.string.pleaseWait));
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 500, this);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 500, this);
             }
             else {
                 showPromptToEnableLocation();
@@ -237,6 +254,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     public void onLocationChanged(Location location)
     {
         Log.i(TAG, "on Location changed");
+        onLocationReceived(location);
+    }
+
+    private void onLocationReceived(Location location)
+    {
+        Log.i(TAG, "onLocation Received");
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         address = Utils.getLatLong(latitude, longitude);
@@ -275,6 +298,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     @Override
     public void onDestroy()
     {
+        Log.i(TAG, "on Destroy");
         locationManager.removeUpdates(this);
         super.onDestroy();
         presenter.onDestroy();

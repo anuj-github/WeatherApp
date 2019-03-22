@@ -3,11 +3,12 @@
     <string name="OK">OK</string>
     <string name="cancel">Cancel</string>
     <string name="permision_reason">You need to allow access to location permissions to get weather result</string>
-    <string name="permission_error">Permission Denied, You cannot access weather data.</string>
+    <string name="permission_error">Enable location permission for weather app from settings.</string>
     <string name="gps_network_not_enabled">Enable Location and retry.</string>
     <string name="open_location_settings">Open Setting</string>
     <string name="error">Something went wrong at our end!</string>
     <string name="retry">RETRY</string>
     <string name="enablegps">Please enable Location/GPS.</string>
     <string name="internet_not_available">Check your internet connection.</string>
+    <string name="pleaseWait">Trying to get device location.</string>
 </resources>

@@ -9,9 +9,6 @@ public class Forecastday {
     @SerializedName("date")
     @Expose
     private String date;
-    @SerializedName("date_epoch")
-    @Expose
-    private Integer dateEpoch;
     @SerializedName("day")
     @Expose
     private Day day;
@@ -22,14 +19,6 @@ public class Forecastday {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public Integer getDateEpoch() {
-        return dateEpoch;
-    }
-
-    public void setDateEpoch(Integer dateEpoch) {
-        this.dateEpoch = dateEpoch;
     }
 
     public Day getDay() {
