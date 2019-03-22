@@ -1,8 +1,10 @@
 package com.android.weather.network;
 
+import com.android.weather.MyApplication;
 import com.android.weather.model.ApiResponse;
 import com.android.weather.ui.weather.IWeatherContract;
 import com.android.weather.utils.Constant;
+import com.android.weather.utils.Utils;
 
 
 import android.util.Log;
@@ -57,6 +59,12 @@ public class NetworkApiManager
      */
     public void loadFromApi(String address, IWeatherContract.onFinishedListener listener)
     {
+        if (!Utils.checkInternetConnection(MyApplication.getApplication())) {
+
+            Log.i(TAG, "No internet");
+            listener.onInternetNotConnected();
+            return;
+        }
         ApiInterface showApi = retrofit.create(ApiInterface.class);
         String url = Constant.FORECAST_URI+address+Constant.day;
         Log.i(TAG, "Url is " + url);

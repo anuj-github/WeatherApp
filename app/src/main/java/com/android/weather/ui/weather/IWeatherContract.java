@@ -9,7 +9,7 @@ public interface IWeatherContract
         void hideProgress();
         void refreshWeather(ApiResponse response);
         void showToast(String msg);
-        void showError();
+        void showError(int errorCode);
     }
     interface IWeatherPresenter{
         void loadWeatherData(String address);
