@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest
+public class UtilsUnitTest
 {
     @Test
     public void testWenesday()
@@ -44,5 +44,16 @@ public class ExampleUnitTest
         res = Utils.getTemp(d);
         assertNotNull(res);
         assertEquals("28"+(char)0x00B0 +"C", res);
+    }
+
+    @Test
+    public void testLatLong()
+    {
+        //test with decimal
+        double latitude = 29.411;
+        double longitude = 72.1999;
+        String res = Utils.getLatLong(latitude, longitude);
+        assertNotNull(res);
+        assertEquals(latitude+","+longitude, res);
     }
 }

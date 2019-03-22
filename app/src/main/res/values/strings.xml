@@ -8,5 +8,6 @@
     <string name="open_location_settings">Open Setting</string>
     <string name="error">Something went wrong at our end</string>
     <string name="retry">RETRY</string>
-    <string name="enablegps">Please Enable GPS and Internet</string>
+    <string name="enablegps">Please enable Location/GPS.</string>
+    <string name="internet_not_available">Check your internet connection.</string>
 </resources>

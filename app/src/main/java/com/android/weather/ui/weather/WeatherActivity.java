@@ -6,6 +6,7 @@ import com.android.weather.R;
 import com.android.weather.model.ApiResponse;
 import com.android.weather.model.Current;
 import com.android.weather.model.Forecastday;
+import com.android.weather.utils.Constant;
 import com.android.weather.utils.Utils;
 
 import android.content.Context;
@@ -29,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-//TODO move Location listner to separate class
+//TODO move Location listener to separate class
 public class WeatherActivity extends AppCompatActivity implements IWeatherContract.IWeatherView, LocationListener
 {
     private static final String TAG = WeatherActivity.class.getSimpleName();
@@ -39,6 +40,8 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     View weatherView;
     @BindView(R.id.errorscreen)
     View errorView;
+    @BindView(R.id.errorMsg)
+    TextView errorText;
     @BindView(R.id.retryButton)
     Button button;
     @BindView(R.id.temp_text)
@@ -99,6 +102,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     @Override
     public void refreshWeather(ApiResponse response)
     {
+        hideProgress();
         errorView.setVisibility(View.GONE);
         weatherView.setVisibility(View.VISIBLE);
         updateData(response);
@@ -140,11 +144,33 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     }
 
     @Override
-    public void showError()
+    public void showError(int errorCode)
     {
         hideProgress();
+        updateErrorText(errorCode);
         errorView.setVisibility(View.VISIBLE);
         weatherView.setVisibility(View.GONE);
+    }
+
+    /**
+     * update error text
+     *
+     * @param errorCode
+     */
+    public void updateErrorText(int errorCode)
+    {
+        switch (errorCode) {
+        case Constant
+            .Error.INTERNET_NOT_AVAILABLE:
+            errorText.setText(R.string.internet_not_available);
+            break;
+        case Constant.Error.LOCATION_PROVIDER_DISABLED:
+            errorText.setText(R.string.enablegps);
+            break;
+        case Constant.Error.DEFAULT:
+            errorText.setText(R.string.error);
+            break;
+        }
     }
 
     @OnClick(R.id.retryButton)
@@ -169,6 +195,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
             boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (gpsEnabled && networkEnabled) {
+                showProgress();
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 500, this);
             }
             else {
@@ -177,14 +204,14 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         }
         catch (SecurityException e) {
             Log.i(TAG, "Error while getting location" + e);
-            showError();
+            showError(Constant.Error.DEFAULT);
         }
     }
 
     private void showPromptToEnableLocation()
     {
         // notify user
-        showError();
+        showError(Constant.Error.LOCATION_PROVIDER_DISABLED);
         new AlertDialog.Builder(this)
             .setMessage(R.string.gps_network_not_enabled)
             .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener()
@@ -238,7 +265,19 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         Log.i(TAG, "Location provider disabled");
         if (address == null) {
             showToast(getString(R.string.enablegps));
-            showError();
+            showError(Constant.Error.LOCATION_PROVIDER_DISABLED);
         }
+    }
+
+    /**
+     * remove location update listener
+     */
+    @Override
+    public void onDestroy()
+    {
+        locationManager.removeUpdates(this);
+        super.onDestroy();
+        presenter.onDestroy();
+
     }
 }

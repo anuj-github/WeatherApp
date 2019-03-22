@@ -2,6 +2,7 @@ package com.android.weather.ui.weather;
 
 import com.android.weather.model.ApiResponse;
 import com.android.weather.network.NetworkApiManager;
+import com.android.weather.utils.Constant;
 
 public class WeatherPresenter implements IWeatherContract.IWeatherPresenter, IWeatherContract.onFinishedListener
 {
@@ -29,7 +30,6 @@ public class WeatherPresenter implements IWeatherContract.IWeatherPresenter, IWe
     public void onFinished(ApiResponse response)
     {
         if (view != null) {
-            view.hideProgress();
             view.refreshWeather(response);
         }
     }
@@ -38,8 +38,7 @@ public class WeatherPresenter implements IWeatherContract.IWeatherPresenter, IWe
     public void onFailure()
     {
         if (view != null) {
-            view.hideProgress();
-            view.showError();
+            view.showError(Constant.Error.DEFAULT);
         }
     }
 
@@ -47,8 +46,7 @@ public class WeatherPresenter implements IWeatherContract.IWeatherPresenter, IWe
     public void onInternetNotConnected()
     {
         if (view != null) {
-            view.hideProgress();
-            view.showError();
+            view.showError(Constant.Error.INTERNET_NOT_AVAILABLE);
         }
     }
 }
