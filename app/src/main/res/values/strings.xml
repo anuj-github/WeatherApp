@@ -10,4 +10,5 @@
     <string name="retry">RETRY</string>
     <string name="enablegps">Please enable Location/GPS.</string>
     <string name="internet_not_available">Check your internet connection.</string>
+    <string name="pleaseWait">Please wait while we get device location.</string>
 </resources>

@@ -17,7 +17,7 @@
         android:fontFamily="sans-serif-thin"
         android:gravity="center_vertical"
         android:text="@string/error"
-        android:textColor="@color/textColor"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size" />
 
     <Button
@@ -29,5 +29,5 @@
         android:layout_marginTop="@dimen/margin_retry"
         android:background="@drawable/button_drawable"
         android:text="@string/retry"
-        android:textColor="@color/textColor" />
+        android:textColor="@color/white" />
 </RelativeLayout>

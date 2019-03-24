@@ -3,6 +3,7 @@ package com.android.weather.ui.weather;
 import java.util.List;
 
 import com.android.weather.R;
+import com.android.weather.adapter.WeatherForecastAdapter;
 import com.android.weather.model.ApiResponse;
 import com.android.weather.model.Current;
 import com.android.weather.model.Forecastday;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,8 +37,8 @@ import butterknife.OnClick;
 public class WeatherActivity extends AppCompatActivity implements IWeatherContract.IWeatherView, LocationListener
 {
     private static final String TAG = WeatherActivity.class.getSimpleName();
-    LocationManager locationManager;
-    IWeatherContract.IWeatherPresenter presenter;
+    LocationManager mLocationManager;
+    IWeatherContract.IWeatherPresenter mPresenter;
     @BindView(R.id.weatherscreen)
     View weatherView;
     @BindView(R.id.errorscreen)
@@ -48,31 +51,12 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     TextView currentCityTemp;
     @BindView(R.id.temp_city)
     TextView currentCity;
-    //nextday
-    @BindView(R.id.forecast_day_one)
-    TextView nextDay;
-    @BindView(R.id.forecast_temp_one)
-    TextView nextDayTemp;
-    //2ndday
-    @BindView(R.id.forecast_day_two)
-    TextView secondDay;
-    @BindView(R.id.forecast_temp_two)
-    TextView secondDayTemp;
-
-    //3rdday
-    @BindView(R.id.forecast_day_three)
-    TextView thirdDay;
-    @BindView(R.id.forecast_temp_three)
-    TextView thirdDayTemp;
-
-    //4th Day
-    @BindView(R.id.forecast_day_four)
-    TextView fourthDay;
-    @BindView(R.id.forecast_temp_four)
-    TextView fourthDayTemp;
+    private WeatherForecastAdapter mAdapter;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
-    String address;
+    @BindView(R.id.weatherRecylerView)
+    RecyclerView mRecyclerView;
+    String mAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -81,8 +65,21 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         Log.i(TAG, "Weather activity created");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        presenter = new WeatherPresenter(this);
+        mPresenter = new WeatherPresenter(this);
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getLocation();
+        initAdapter();
+    }
+
+    /**
+     * initialize adaper
+     */
+    private void initAdapter(){
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new WeatherForecastAdapter();
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -99,6 +96,10 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         progressBar.setVisibility(View.GONE);
     }
 
+    /**
+     * update ui with received response
+     * @param response
+     */
     @Override
     public void refreshWeather(ApiResponse response)
     {
@@ -115,26 +116,15 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
      */
     private void updateData(ApiResponse response)
     {
-        //TODO Anuj Avoid duplicating and try recyler view for this
         //current day
         Current current = response.getCurrent();
         currentCity.setText(response.getLocation().getName());
         currentCityTemp.setText(Utils.getTemp(current.getTempC()));
         List<Forecastday> forecastdayList = response.getForecast().getForecastday();
-        //next day
-        nextDay.setText(Utils.getDay(forecastdayList.get(1).getDate()));
-        nextDayTemp.setText(Utils.getTemp(forecastdayList.get(1).getDay().getAvgtempC()));
-        //second day
-        secondDay.setText(Utils.getDay(forecastdayList.get(2).getDate()));
-        secondDayTemp.setText(Utils.getTemp(forecastdayList.get(2).getDay().getAvgtempC()));
-        //third day
-        thirdDay.setText(Utils.getDay(forecastdayList.get(3).getDate()));
-        thirdDayTemp.setText(Utils.getTemp(forecastdayList.get(3).getDay().getAvgtempC()));
-        // fourth day
-        fourthDay.setText(Utils.getDay(forecastdayList.get(4).getDate()));
-        fourthDayTemp.setText(Utils.getTemp(forecastdayList.get(4).getDay().getAvgtempC()));
-
-
+        //remove current day
+        forecastdayList.remove(0);
+        mAdapter.setForecastdayList(forecastdayList);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -176,9 +166,10 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     @OnClick(R.id.retryButton)
     public void onRetry()
     {
+        Log.i(TAG, "on Retry");
         showProgress();
-        if (address != null) {
-            presenter.loadWeatherData(address);
+        if (mAddress != null) {
+            mPresenter.loadWeatherData(mAddress);
         }
         else {
             getLocation();
@@ -190,15 +181,28 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
      */
     void getLocation()
     {
+        Log.i(TAG, "check location");
+
         try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            Location location = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            //if last known location is already available use this to fetch location
+            if (location != null) {
+                Log.i(TAG, "Location available");
+                onLocationReceived(location);
+                return;
+            }
+            //check if gps and network provider is enabled
+            boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean networkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            Log.i(TAG, "is gps enabled? " + networkEnabled + " Requesting location now");
             if (gpsEnabled && networkEnabled) {
                 showProgress();
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 500, this);
+                showToast(getString(R.string.pleaseWait));
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 500, this);
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 500, this);
             }
             else {
+                //prompt to enable location as gps is not enabled
                 showPromptToEnableLocation();
             }
         }
@@ -208,6 +212,9 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         }
     }
 
+    /**
+     * show prompt to enabled location
+     */
     private void showPromptToEnableLocation()
     {
         // notify user
@@ -219,6 +226,7 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt)
                 {
+                    //start setting screen to turn on location
                     startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             })
@@ -237,10 +245,20 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     public void onLocationChanged(Location location)
     {
         Log.i(TAG, "on Location changed");
+        onLocationReceived(location);
+    }
+
+    /**
+     * location received
+     * @param location
+     */
+    private void onLocationReceived(Location location)
+    {
+        Log.i(TAG, "onLocation Received");
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        address = Utils.getLatLong(latitude, longitude);
-        presenter.loadWeatherData(address);
+        mAddress = Utils.getLatLong(latitude, longitude);
+        mPresenter.loadWeatherData(mAddress);
     }
 
     @Override
@@ -250,20 +268,28 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
         Log.i(TAG, "Location provider status changed");
     }
 
+    /**
+     * called when location provider enabled
+     * @param provider
+     */
     @Override
     public void onProviderEnabled(String provider)
     {
         Log.i(TAG, "Location provider enabled");
-        if (address == null) {
+        if (mAddress == null) {
             getLocation();
         }
     }
 
+    /**
+     * called when location provider disabled
+     * @param provider
+     */
     @Override
     public void onProviderDisabled(String provider)
     {
         Log.i(TAG, "Location provider disabled");
-        if (address == null) {
+        if (mAddress == null) {
             showToast(getString(R.string.enablegps));
             showError(Constant.Error.LOCATION_PROVIDER_DISABLED);
         }
@@ -275,9 +301,10 @@ public class WeatherActivity extends AppCompatActivity implements IWeatherContra
     @Override
     public void onDestroy()
     {
-        locationManager.removeUpdates(this);
+        Log.i(TAG, "on Destroy");
+        mLocationManager.removeUpdates(this);
         super.onDestroy();
-        presenter.onDestroy();
+        mPresenter.onDestroy();
 
     }
 }

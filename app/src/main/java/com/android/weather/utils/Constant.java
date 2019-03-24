@@ -7,9 +7,12 @@ public class Constant
         "https://api.apixu.com/v1/forecast.json?key=03197dbd84254f939a6143632191903&q=";
     public static final String day = "&days=5";
     public static final String CURRENT_URI = "https://api.apixu.com/v1/";
-    public interface Error{
+
+    //error constant interface to show text based on this in UI
+    public interface Error
+    {
         int DEFAULT = 0;
         int INTERNET_NOT_AVAILABLE = 1;
-        int LOCATION_PROVIDER_DISABLED =2 ;
+        int LOCATION_PROVIDER_DISABLED = 2;
     }
 }

@@ -9,12 +9,9 @@
     </style>
 
     <style name="day_style" parent="textStyle">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/margin_medium</item>
-        <item name="android:paddingStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginLeft">@dimen/margin_medium</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
 
-        <item name="android:layout_centerVertical">true</item>
         <item name="android:textColor">@color/temp_color</item>
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:fontFamily">sans-serif-regular</item>
@@ -22,10 +19,8 @@
     </style>
 
     <style name="temp_style" parent="textStyle">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:paddingEnd">@dimen/margin_medium</item>
-        <item name="android:paddingRight">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:layout_marginRight">@dimen/margin_medium</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
 
@@ -33,6 +28,8 @@
     </style>
 
     <style name="textStyle" >
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textColor">@color/temp_color</item>
         <item name="android:textSize">@dimen/text_size_16</item>
@@ -42,7 +39,7 @@
     <style name="card_style">
         <item name="android:layout_height">@dimen/card_height</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="cardBackgroundColor">@color/textColor</item>
+        <item name="cardBackgroundColor">@color/white</item>
         <item name="android:paddingTop">@dimen/margin_medium</item>
 
     </style>

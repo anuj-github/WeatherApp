@@ -5,7 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorError">#E85959</color>
     <color name="background">#F5F6F7</color>
-    <color name="textColor">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
     <color name="button_background">#4A4A4A</color>
     <color name="temp_color">#2A2A2A</color>
     <color name="city_color">#556799</color>

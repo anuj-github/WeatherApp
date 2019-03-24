@@ -4,6 +4,9 @@ import com.android.weather.model.ApiResponse;
 import com.android.weather.network.NetworkApiManager;
 import com.android.weather.utils.Constant;
 
+/**
+ * presenter class to interact between ui and network
+ */
 public class WeatherPresenter implements IWeatherContract.IWeatherPresenter, IWeatherContract.onFinishedListener
 {
     IWeatherContract.IWeatherView view;
