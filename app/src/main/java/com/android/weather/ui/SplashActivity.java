@@ -133,7 +133,14 @@ public class SplashActivity extends AppCompatActivity
         new AlertDialog.Builder(SplashActivity.this)
             .setMessage(message)
             .setPositiveButton(R.string.OK, okListener)
-            .setNegativeButton(R.string.cancel, null)
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    finish();
+                }
+            })
             .create()
             .show();
     }
